@@ -28,6 +28,7 @@ struct Detection
     const std::string classLabel;
     const float confidence;
     const nx::sdk::Uuid trackId;
+    const std::string color; //Add color field to the detection
 };
 
 using DetectionList = std::vector<std::shared_ptr<Detection>>;

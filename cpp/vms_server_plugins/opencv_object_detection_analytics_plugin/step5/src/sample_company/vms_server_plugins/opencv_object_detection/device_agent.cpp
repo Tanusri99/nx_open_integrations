@@ -5,6 +5,7 @@
 #include <chrono>
 #include <exception>
 #include <cctype>
+#include <iostream>
 
 #include <opencv2/core.hpp>
 #include <opencv2/dnn/dnn.hpp>
@@ -18,6 +19,7 @@
 #include "detection.h"
 #include "exceptions.h"
 #include "frame.h"
+#include "kafka_consumer.h"
 
 namespace sample_company {
 namespace vms_server_plugins {
@@ -38,12 +40,25 @@ DeviceAgent::DeviceAgent(
     // Call the DeviceAgent helper class constructor telling it to verbosely report to stderr.
     ConsumingDeviceAgent(deviceInfo, /*enableOutput*/ true),
     m_objectDetector(std::make_unique<ObjectDetector>(pluginHomeDir)),
-    m_objectTracker(std::make_unique<ObjectTracker>())
+    m_objectTracker(std::make_unique<ObjectTracker>()),
+    m_kafkaConsumer("localhost:9092", "color_detection"),
+    m_running(true)
 {
+    m_kafkaConsumer.setMessageCallback([this](const std::string& message) {
+        processKafkaMessage(message);
+    });
+
+    m_kafkaConsumerThread = std::thread([this] {
+        m_kafkaConsumer.start();
+    });
+    
 }
 
 DeviceAgent::~DeviceAgent()
 {
+    m_running = false;
+    if(m_kafkaConsumerThread.joinable())
+        m_kafkaConsumerThread.join();
 }
 
 /**
@@ -141,6 +156,38 @@ void DeviceAgent::doSetNeededMetadataTypes(
         m_terminated = true;
     }
 };
+
+//-------------------------------------------------------------------------------------------------
+void DeviceAgent::initializeKafkaConsumer()
+{
+    m_kafkaConsumer.setMessageCallback([this](const std::string& message) {
+        processKafkaMessage(message);
+    });
+    m_kafkaConsumer.start();
+}
+
+void DeviceAgent::processKafkaMessage(const std::string& message)
+{
+    nlohmann::json messageJson = nlohmann::json::parse(message);
+    std::string label = messageJson["label"];
+    float confidence = messageJson["confidence"];
+    std::string topColors = messageJson["top_colors"];
+    std::string pantsColors = messageJson["pants_colors"];
+    std::string dominantColors = messageJson["dominant_colors"];
+
+    // Handle the detection results based on your logic
+    if (label == "person")
+    {
+        // Process top and pants color detection
+        std::cout << "Detected person with top color: " << topColors <<
+            " and pants color: " << pantsColors << std::endl;
+    }
+    else
+    {
+        // Process other detections
+        std::cout << "Detected " << label << " with dominant color: " << dominantColors << std::endl;
+    }
+}
 
 //-------------------------------------------------------------------------------------------------
 // private

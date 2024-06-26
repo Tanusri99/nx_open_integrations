@@ -3,6 +3,8 @@
 #pragma once
 
 #include <filesystem>
+#include <thread>
+#include <atomic>
 
 #include <nx/sdk/analytics/helpers/event_metadata_packet.h>
 #include <nx/sdk/analytics/helpers/object_metadata_packet.h>
@@ -54,6 +56,10 @@ private:
     MetadataPacketList processFrame(
         const nx::sdk::analytics::IUncompressedVideoFrame* videoFrame);
 
+    // Kafka consumer
+    void initializeKafkaConsumer();
+    void processKafkaMessage(const std::string& message);
+
 private:
     const std::string kPersonObjectType = "nx.base.Person";
     const std::string kCatObjectType = "nx.base.Cat";
@@ -79,6 +85,11 @@ private:
     // Used for checking whether the frame size changed, and for reinitializing the tracker.
     int m_previousFrameWidth = 0;
     int m_previousFrameHeight = 0;
+
+    // Used for checking whether the frame rate changed, and for reinitializing the tracker.
+    KafkaConsumer m_kafkaConsumer;
+    std::thread m_kafkaConsumerThread;
+    std::atomic<bool> m_running{false};
 };
 
 } // namespace opencv_object_detection

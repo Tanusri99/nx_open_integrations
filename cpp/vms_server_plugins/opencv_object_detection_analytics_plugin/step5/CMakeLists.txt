@@ -1,11 +1,9 @@
-## Copyright 2018-present Network Optix, Inc. Licensed under MPL 2.0: www.mozilla.org/MPL/2.0/
-
 cmake_minimum_required(VERSION 3.15)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
 project(opencv_object_detection_analytics_plugin)
 
 set(metadataSdkVersion "5.1.1.37512")
-set(metadataSdkDir "" CACHE PATH
+set(metadataSdkDir "/home/aol/tanu" CACHE PATH
     "Path to unpacked VMS Metadata SDK zip. Tested with version ${metadataSdkVersion}.")
 
 if(metadataSdkDir STREQUAL "")
@@ -151,13 +149,17 @@ file(GLOB_RECURSE OPENCV_OBJECT_DETECTION_ANALYTICS_PLUGIN_SRC
 add_library(opencv_object_detection_analytics_plugin SHARED
     ${OPENCV_OBJECT_DETECTION_ANALYTICS_PLUGIN_SRC})
 target_include_directories(opencv_object_detection_analytics_plugin PRIVATE 
-    ${OPENCV_ANALYTICS_PLUGIN_SRC_DIR})
+    ${OPENCV_OBJECT_DETECTION_ANALYTICS_PLUGIN_SRC_DIR}
+    ${metadataSdkDir}
+    /usr/include/librdkafka
+)
 set(CMAKE_EXE_LINKER_FLAGS " -static")
 target_link_libraries(opencv_object_detection_analytics_plugin
     nx_kit
     nx_sdk
     opencv::core opencv::flann opencv::imgproc opencv::imgcodecs opencv::dnn opencv::opencv_dnn opencv::ml 
     opencv::plot opencv::opencv_features2d opencv::opencv_calib3d opencv::datasets opencv::video opencv::tracking
+    /usr/lib/x86_64-linux-gnu/librdkafka.a
 )
 
 target_compile_definitions(opencv_object_detection_analytics_plugin
