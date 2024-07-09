@@ -2,11 +2,9 @@
 
 #include "plugin.h"
 
-#include "nx/sdk/analytics/helpers/plugin.h" // Add missing include path
-
-#include "engine.h"
-
+#include <engine.h>
 #include <curl/curl.h>
+// Add this line to include the missing header
 #include "kafka_consumer.h"
 #include <iostream>
 

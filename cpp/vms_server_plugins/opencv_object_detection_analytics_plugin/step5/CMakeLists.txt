@@ -3,7 +3,7 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
 project(opencv_object_detection_analytics_plugin)
 
 set(metadataSdkVersion "5.1.1.37512")
-set(metadataSdkDir "/home/aol/tanu" CACHE PATH
+set(metadataSdkDir "/home/aol/tanu/metadata_sdk" CACHE PATH
     "Path to unpacked VMS Metadata SDK zip. Tested with version ${metadataSdkVersion}.")
 
 if(metadataSdkDir STREQUAL "")

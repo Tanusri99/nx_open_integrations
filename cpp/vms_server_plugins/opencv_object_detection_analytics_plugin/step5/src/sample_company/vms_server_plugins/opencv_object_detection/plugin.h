@@ -2,8 +2,7 @@
 
 #pragma once
 
-#include <nx/sdk/analytics/helpers/plugin.h>
-#include <nx/sdk/analytics/i_engine.h>
+#include <string> // Add this line to include the <string> header
 
 namespace sample_company {
 namespace vms_server_plugins {

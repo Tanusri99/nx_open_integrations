@@ -4,13 +4,31 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
+                "/home/aol/Desktop/Develop/metadata_sdk/src", //Path to NX SDK headers
+                "/usr/include/librdkafka", //Path to librdkafka headers
+                "/usr/include/opencv4", //Path to OpenCV headers
+                "/usr/include", //General include path
+                "/usr/local/include", //;General include path
                 "${vcpkgRoot}/x64-linux/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "c17",
             "cppStandard": "gnu++17",
-            "intelliSenseMode": "linux-gcc-x64"
+            "intelliSenseMode": "linux-gcc-x64",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}",
+                    "/home/aol/Desktop/Develop/metadata_sdk/src",
+                    "/usr/include/librdkafka",
+                    "/usr/include/opencv4",
+                    "/usr/include",
+                    "/usr/local/include",
+                    "${vcpkgRoot}/x64-linux/include"
+                ],
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": ""
+            }
         }
     ],
     "version": 4
